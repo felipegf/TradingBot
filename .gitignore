@@ -1,0 +1,63 @@
+﻿# Configurações globais para .NET
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+*.csproj.user
+*.msbuild.vs.json
+*.dbmdl
+*.userosscache
+*.suo
+*.user
+
+# Diretórios de dependências
+packages/
+.nuget/
+.vs/
+.vscode/
+
+# Configurações de IDE (Rider e VSCode)
+.idea/
+*.iml
+.vscode/
+
+# Arquivos de sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs, Debug e Arquivos Temporários
+*.log
+*.swp
+*.temp
+*.tmp
+
+# Arquivos de configuração locais
+appsettings.Development.json
+appsettings.Local.json
+
+# Configurações específicas do Visual Studio
+*.vs/
+.vscode/
+*.sln.docstates
+*.userprefs
+*.csproj.vspscc
+*.vbproj.vspscc
+_ReSharper.*
+
+# Configurações específicas do Rider
+.idea/
+*.iml
+.idea/*
+.idea/workspace.xml
+.idea/dictionaries
+.idea/libraries
+.idea/modules.xml
+.idea/inspectionProfiles
+
+# Arquivos gerados automaticamente
+project.lock.json
+project.fragment.lock.json
