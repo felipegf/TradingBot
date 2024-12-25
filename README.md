@@ -2,35 +2,35 @@
 
 ## Descrição
 
-O **Trading Bot** é um projeto focado no mercado de criptomoedas, cujo objetivo inicial é desenvolver um MVP que analise os dados de mercado e gere alertas sobre os melhores momentos para compra e venda. A aplicação utiliza **.NET Core**, **TDD**, **DDD** e outras boas práticas de desenvolvimento.
-
-Este repositório é privado e destina-se ao aprendizado e desenvolvimento contínuo de um sistema robusto e escalável.
+O **Trading Bot** é um projeto focado no mercado de criptomoedas, cujo objetivo é processar dados de mercado e gerar análises e alertas, identificando oportunidades para compra e venda de ativos. Este projeto utiliza **.NET Core** e segue as melhores práticas, incluindo **DDD** (Domain-Driven Design), **TDD** (Test-Driven Development) e **CQRS**.
 
 ---
 
-## Estrutura Inicial
+## Estrutura do Projeto
 
-A solução segue o padrão de Camadas com base no **DDD (Domain-Driven Design)**:
+A aplicação segue uma arquitetura modular com as seguintes camadas:
 
-- **TradingBot.Application**: Camada de aplicação para orquestração de casos de uso.
-- **TradingBot.Domain**: Camada de domínio, contendo entidades, serviços e lógica de negócio.
-- **TradingBot.Infrastructure**: Camada de infraestrutura, responsável por persistência e integração com APIs externas.
-- **TradingBot.Tests**: Testes unitários e de integração para garantir a qualidade do código.
-
----
-
-## Tecnologias
-
-- **Linguagem**: C# (.NET Core 7/8)
-- **Banco de Dados**: SQLite (MVP) ou alternativa escalável
-- **APIs Externas**: Binance, Coinbase (outras podem ser adicionadas)
-- **Testes**: xUnit, FluentAssertions, TDD
-- **Logs**: Serilog (Logs Estruturados)
+- **TradingBot.Application**: Contém os casos de uso e orquestração.
+- **TradingBot.Domain**: Define as entidades, serviços de domínio e lógica de negócios.
+- **TradingBot.Infrastructure**: Implementa persistência e integração com APIs externas.
+- **TradingBot.Tests**: Testes unitários e de integração.
 
 ---
 
-## Instalação e Execução
+## Tecnologias Utilizadas
+
+- **.NET Core 7/8**
+- **xUnit** e **FluentAssertions** para testes.
+- **MediatR** para implementação de CQRS.
+- **Entity Framework Core** e **Dapper** para persistência.
+- **Serilog** para logs estruturados.
+- **APIs Externas**: Integração com Binance, Coinbase (ou outras fontes).
+
+---
+
+## Configuração Inicial
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/felipegf/TradingBot.git
+   git clone https://github.com/seu-usuario/TradingBot.git
+~~~~
