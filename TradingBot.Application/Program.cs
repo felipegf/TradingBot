@@ -1,38 +1,53 @@
-﻿namespace TradingBot.Application
+﻿using Serilog;
+
+namespace TradingBot.Application
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            // Configurar Serilog
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console() // Logs no console
+                .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day) // Logs em arquivo
+                .CreateLogger();
 
-            // Configurar serviços (Dependências)
-            ConfigureServices(builder.Services);
+            try
+            {
+                Log.Information("Iniciando a aplicação...");
 
-            var app = builder.Build();
+                var builder = WebApplication.CreateBuilder(args);
 
-            // Configurar o pipeline de requisições HTTP
-            ConfigureMiddleware(app);
+                // Integrar Serilog com o sistema de logging do ASP.NET Core
+                builder.Host.UseSerilog();
 
-            app.Run();
+                ConfigureServices(builder.Services);
+
+                var app = builder.Build();
+
+                ConfigureMiddleware(app);
+
+                app.Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "A aplicação falhou ao iniciar");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            // Adicionar Health Checks
             services.AddHealthChecks();
-
-            // Adicionar outras dependências, ex.:
-            // services.AddSingleton<IMyService, MyService>();
         }
 
         private static void ConfigureMiddleware(WebApplication app)
         {
-            // Endpoint para Health Check
             app.MapHealthChecks("/health");
-
-            // Mapear outras rotas, se necessário
-            // app.MapGet("/", () => "Hello, TradingBot!");
         }
     }
 }
+

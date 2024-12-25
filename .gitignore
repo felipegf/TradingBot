@@ -34,6 +34,7 @@ desktop.ini
 *.swp
 *.temp
 *.tmp
+logs/
 
 # Arquivos de configuração locais
 appsettings.Development.json

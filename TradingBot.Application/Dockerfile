@@ -9,6 +9,9 @@ COPY TradingBot.Domain/*.csproj TradingBot.Domain/
 # Restaurar dependências
 RUN dotnet restore TradingBot.Application/TradingBot.Application.csproj
 
+# Criar o diretório de logs
+RUN mkdir -p /app/logs
+
 # Copiar todo o código-fonte e publicar
 COPY . .
 WORKDIR /src/TradingBot.Application
