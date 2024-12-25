@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using TradingBot.Domain.Results;
 
-namespace TradingBot.Tests.Domain
+namespace TradingBot.Tests.Domain.Services
 {
     public class VolumeSpikeResultTests
     {

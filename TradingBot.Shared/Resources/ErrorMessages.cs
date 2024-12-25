@@ -7,5 +7,8 @@
         public const string InvalidData = "Os dados fornecidos são inválidos.";
         public const string ValidationFailed = "A validação falhou.";        
         public const string InsufficientData = "Dados insuficientes para o cálculo.";
+        public const string EmptyPriceList = "A lista de preços não pode estar vazia.";
+        public const string InvalidPeriod = "O período fornecido é inválido.";
+        public const string EmptyVolumeList = "A lista de volumes não pode estar vazia.";
     }
 }

@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using TradingBot.Domain.Results;
 
-namespace TradingBot.Tests.Domain
+namespace TradingBot.Tests.Domain.Results
 {
     public class RSIAnalysisResultTests
     {
@@ -16,7 +16,7 @@ namespace TradingBot.Tests.Domain
             var result = new RSIAnalysisResult(rsiValue, indication);
 
             // Assert
-            result.RSIValue.Should().Be(rsiValue);
+            result.RSI.Should().Be(rsiValue);
             result.Indication.Should().Be(indication);
         }
 
@@ -27,10 +27,10 @@ namespace TradingBot.Tests.Domain
             double rsiValue = 70.2;
 
             // Act
-            var result = new RSIAnalysisResult(rsiValue);
+            var result = new RSIAnalysisResult(rsiValue, null);
 
             // Assert
-            result.RSIValue.Should().Be(rsiValue);
+            result.RSI.Should().Be(rsiValue);
             result.Indication.Should().BeNull();
         }
     }

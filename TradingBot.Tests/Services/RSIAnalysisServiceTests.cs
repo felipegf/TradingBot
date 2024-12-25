@@ -16,16 +16,14 @@ namespace TradingBot.Tests.Services
         public void CalculateRSI_ShouldReturnOversold_WhenRSIIsBelow30()
         {
             // Arrange
-            var service = new RSIAnalysisService();
-
-            // Conjunto de dados com mais perdas do que ganhos
             var priceChanges = new List<double> { -1.5, -0.8, -1.2, 0.2, -0.4, -0.6 };
 
             // Act
-            var result = service.CalculateRSI(priceChanges);
+            var result = _rsiAnalysisService.CalculateRSI(priceChanges);
 
             // Assert
-            result.Should().BeLessThan(30.0);
+            result.RSI.Should().BeLessThan(30.0);
+            result.Indication.Should().Be("Oversold");
         }
 
         [Fact]
@@ -38,23 +36,22 @@ namespace TradingBot.Tests.Services
             var result = _rsiAnalysisService.CalculateRSI(priceChanges);
 
             // Assert
-            result.Should().BeGreaterThan(70);
+            result.RSI.Should().BeGreaterThan(70);
+            result.Indication.Should().Be("Overbought");
         }
 
         [Fact]
         public void CalculateRSI_ShouldReturnIntermediateValue_WhenRSIIsBetween30And70()
         {
             // Arrange
-            var service = new RSIAnalysisService();
-
-            // Conjunto de ganhos e perdas equilibrados
             var priceChanges = new List<double> { 1.0, -0.5, 0.7, -0.3, 0.2, -0.1 };
 
             // Act
-            var result = service.CalculateRSI(priceChanges);
+            var result = _rsiAnalysisService.CalculateRSI(priceChanges);
 
             // Assert
-            result.Should().BeInRange(30.0, 70.0);
+            result.RSI.Should().BeInRange(30.0, 70.0);
+            result.Indication.Should().Be("Neutral");
         }
     }
 }
