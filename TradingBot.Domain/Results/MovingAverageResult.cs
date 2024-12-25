@@ -1,4 +1,6 @@
-﻿namespace TradingBot.Domain.Results
+﻿using TradingBot.Shared.Resources;
+
+namespace TradingBot.Domain.Results
 {
     /// <summary>
     /// Resultado para os cálculos de médias móveis.
@@ -8,7 +10,7 @@
         public double SMA { get; }
         public double EMA { get; }
         public int Period { get; }
-        public string? Error { get; }
+        public string? ErrorMessage { get; }
 
         /// <summary>
         /// Construtor para casos de sucesso.
@@ -18,23 +20,23 @@
             SMA = sma;
             EMA = ema;
             Period = period;
-            Error = null;
+            ErrorMessage = null;
         }
 
         /// <summary>
         /// Construtor para casos de falha.
         /// </summary>
-        public MovingAverageResult(double sma, double ema, int period, string error)
+        public MovingAverageResult(double sma, double ema, int period, string? errorMessage)
         {
             SMA = sma;
             EMA = ema;
             Period = period;
-            Error = error;
+            ErrorMessage = errorMessage;
         }
 
         /// <summary>
         /// Indica se o cálculo foi bem-sucedido.
         /// </summary>
-        public bool IsSuccess => string.IsNullOrEmpty(Error);
+        public bool IsSuccess => string.IsNullOrEmpty(ErrorMessage);
     }
 }
