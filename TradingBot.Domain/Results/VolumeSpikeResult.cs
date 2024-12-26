@@ -22,7 +22,7 @@
         /// <summary>
         /// Construtor para casos de falha.
         /// </summary>
-        public VolumeSpikeResult(IEnumerable<int> spikeIndexes, IEnumerable<double> spikeVolumes, string error)
+        public VolumeSpikeResult(IEnumerable<int> spikeIndexes, IEnumerable<double> spikeVolumes, string? error)
         {
             SpikeIndexes = spikeIndexes ?? Enumerable.Empty<int>();
             SpikeVolumes = spikeVolumes ?? Enumerable.Empty<double>();
