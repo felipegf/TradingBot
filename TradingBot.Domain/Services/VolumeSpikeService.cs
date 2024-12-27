@@ -1,4 +1,5 @@
-﻿using TradingBot.Domain.Results;
+﻿using TradingBot.Domain.Interfaces.Services;
+using TradingBot.Domain.Results;
 using TradingBot.Shared.Extensions;
 using TradingBot.Shared.Resources;
 
@@ -8,7 +9,7 @@ namespace TradingBot.Domain.Services
     /// Serviço responsável por identificar picos de volume em dados históricos.
     /// Um pico de volume ocorre quando o volume ultrapassa um limite determinado.
     /// </summary>
-    public class VolumeSpikeService
+    public class VolumeSpikeService : IVolumeSpikeService
     {
         /// <summary>
         /// Identifica picos de volume em uma lista de volumes com base em um multiplicador de limiar.

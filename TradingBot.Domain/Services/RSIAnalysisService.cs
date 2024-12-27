@@ -1,4 +1,5 @@
-﻿using TradingBot.Domain.Results;
+﻿using TradingBot.Domain.Interfaces.Services;
+using TradingBot.Domain.Results;
 using TradingBot.Shared.Resources;
 
 namespace TradingBot.Domain.Services
@@ -7,7 +8,7 @@ namespace TradingBot.Domain.Services
     /// Serviço responsável pelo cálculo do índice de força relativa (RSI).
     /// O RSI é um indicador técnico utilizado para medir a velocidade e a mudança nos movimentos de preço.
     /// </summary>
-    public class RSIAnalysisService
+    public class RSIAnalysisService : IRSIAnalysisService
     {
         /// <summary>
         /// Calcula o índice de força relativa (RSI) com base em uma lista de variações de preços.
