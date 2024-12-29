@@ -1,4 +1,5 @@
-﻿using TradingBot.Domain.Results;
+﻿using TradingBot.Domain.Interfaces.Services;
+using TradingBot.Domain.Results;
 using TradingBot.Shared.Extensions;
 using TradingBot.Shared.Resources;
 
@@ -8,7 +9,7 @@ namespace TradingBot.Domain.Services
     /// Serviço responsável pelo cálculo de médias móveis simples (SMA) e exponenciais (EMA).
     /// As médias móveis são usadas para suavizar dados de preços e identificar tendências.
     /// </summary>
-    public class MovingAverageService
+    public class MovingAverageService : IMovingAverageService
     {
         /// <summary>
         /// Calcula as médias móveis simples (SMA) e exponenciais (EMA) para um conjunto de preços.
