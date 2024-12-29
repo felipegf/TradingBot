@@ -11,12 +11,12 @@ namespace TradingBot.Domain.Services
         {
             if (prices.IsNullOrEmpty() || period <= 0)
             {
-                return Result<List<double>>.Failure(ErrorMessages.InvalidData);
+                return Result<List<double>>.Failure(Messages.InvalidData);
             }
 
             if (prices.Count < period)
             {
-                return Result<List<double>>.Failure(ErrorMessages.InsufficientData);
+                return Result<List<double>>.Failure(Messages.InsufficientData);
             }
 
             var sma = new List<double>();
@@ -35,12 +35,12 @@ namespace TradingBot.Domain.Services
         {
             if (prices.IsNullOrEmpty() || period <= 0)
             {
-                return Result<List<double>>.Failure(ErrorMessages.InvalidData);
+                return Result<List<double>>.Failure(Messages.InvalidData);
             }
 
             if (prices.Count < period)
             {
-                return Result<List<double>>.Failure(ErrorMessages.InsufficientData);
+                return Result<List<double>>.Failure(Messages.InsufficientData);
             }
 
             var ema = new List<double>();
@@ -65,7 +65,7 @@ namespace TradingBot.Domain.Services
         {
             if (volumes.IsNullOrEmpty() || multiplier <= 0)
             {
-                return Result<List<int>>.Failure(ErrorMessages.InvalidData);
+                return Result<List<int>>.Failure(Messages.InvalidData);
             }
 
             var averageVolume = volumes.Average();

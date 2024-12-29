@@ -12,7 +12,7 @@ namespace TradingBot.Tests.Shared.Results
             var result = ValidationResult.Failure(new List<string>());
 
             result.IsSuccess.Should().BeFalse();
-            result.ValidationErrors.Should().BeEquivalentTo(new[] { ErrorMessages.ValidationFailed });
+            result.ValidationErrors.Should().BeEquivalentTo(new[] { Messages.ValidationFailed });
         }
 
         [Fact]

@@ -18,7 +18,7 @@ namespace TradingBot.Domain.Services
         public RSIAnalysisResult CalculateRSI(List<double> priceChanges)
         {
             if (priceChanges == null || !priceChanges.Any())
-                return new RSIAnalysisResult(double.NaN, ErrorMessages.EmptyPriceChangeList);
+                return new RSIAnalysisResult(double.NaN, Messages.EmptyPriceChangeList);
 
             var gains = priceChanges.Where(p => p > 0).Sum(); // Soma de todos os ganhos
             var losses = Math.Abs(priceChanges.Where(p => p < 0).Sum()); // Soma absoluta de todas as perdas

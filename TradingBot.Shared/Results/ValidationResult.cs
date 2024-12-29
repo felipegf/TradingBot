@@ -7,7 +7,7 @@ namespace TradingBot.Shared.Results
         public IEnumerable<string> ValidationErrors { get; }
 
         private ValidationResult(bool isSuccess, IEnumerable<string> validationErrors)
-            : base(isSuccess, isSuccess ? true : default, isSuccess ? null : ErrorMessages.ValidationFailed)
+            : base(isSuccess, isSuccess ? true : default, isSuccess ? null : Messages.ValidationFailed)
         {
             ValidationErrors = validationErrors ?? new List<string>();
         }
@@ -19,7 +19,7 @@ namespace TradingBot.Shared.Results
 
         public static ValidationResult Failure(IEnumerable<string> errors)
         {
-            var validationErrors = errors?.Any() == true ? errors : new[] { ErrorMessages.ValidationFailed };
+            var validationErrors = errors?.Any() == true ? errors : new[] { Messages.ValidationFailed };
             return new ValidationResult(false, validationErrors);
         }
     }

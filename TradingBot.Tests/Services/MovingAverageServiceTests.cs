@@ -27,7 +27,7 @@ namespace TradingBot.Tests.Services
 
             // Assert
             result.IsSuccess.Should().BeFalse();
-            result.Error.Should().Be(ErrorMessages.InvalidData);
+            result.Error.Should().Be(Messages.InvalidData);
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace TradingBot.Tests.Services
 
             // Assert
             result.IsSuccess.Should().BeFalse();
-            result.Error.Should().Be(ErrorMessages.InvalidData);
+            result.Error.Should().Be(Messages.InvalidData);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace TradingBot.Tests.Services
 
             // Assert
             result.IsSuccess.Should().BeFalse();
-            result.Error.Should().Be(ErrorMessages.InvalidData);
+            result.Error.Should().Be(Messages.InvalidData);
         }
 
         //Testes para EMA (CalculateEMA)
@@ -105,7 +105,7 @@ namespace TradingBot.Tests.Services
 
             // Assert
             result.IsSuccess.Should().BeFalse();
-            result.Error.Should().Be(ErrorMessages.InvalidData);
+            result.Error.Should().Be(Messages.InvalidData);
         }
 
         [Fact]

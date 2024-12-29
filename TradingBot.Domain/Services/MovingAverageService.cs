@@ -20,10 +20,10 @@ namespace TradingBot.Domain.Services
         public MovingAverageResult CalculateMovingAverages(List<double> prices, int period)
         {
             if (prices.IsNullOrEmpty())
-                return new MovingAverageResult(0, 0, period, ErrorMessages.EmptyPriceList);
+                return new MovingAverageResult(0, 0, period, Messages.EmptyPriceList);
 
             if (period <= 0)
-                return new MovingAverageResult(0, 0, period, ErrorMessages.InvalidPeriod);
+                return new MovingAverageResult(0, 0, period, Messages.InvalidPeriod);
 
             // Cálculo da média móvel simples (SMA)
             double sma = prices.TakeLast(period).Average();

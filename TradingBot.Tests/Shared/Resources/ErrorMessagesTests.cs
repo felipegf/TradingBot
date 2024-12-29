@@ -9,9 +9,9 @@ namespace TradingBot.Tests.Shared.Resources
         public void ShouldContainExpectedErrorMessageKeys()
         {
             // Validando mensagens centralizadas no ErrorMessages
-            ErrorMessages.EmptyPriceChangeList.Should().Be("A lista de mudanças de preço não pode estar vazia.");
-            ErrorMessages.NullArgument.Should().Be("O argumento fornecido não pode ser nulo.");
-            ErrorMessages.ValidationFailed.Should().Be("A validação falhou.");
+            Messages.EmptyPriceChangeList.Should().Be("A lista de mudanças de preço não pode estar vazia.");
+            Messages.NullArgument.Should().Be("O argumento fornecido não pode ser nulo.");
+            Messages.ValidationFailed.Should().Be("A validação falhou.");
         }
     }
 }

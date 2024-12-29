@@ -20,7 +20,7 @@ namespace TradingBot.Domain.Services
         public VolumeSpikeResult IdentifyVolumeSpikes(List<double> volumes, double thresholdMultiplier)
         {
             if (volumes.IsNullOrEmpty())
-                return new VolumeSpikeResult(new List<int>(), new List<double>(), ErrorMessages.EmptyVolumeList);
+                return new VolumeSpikeResult(new List<int>(), new List<double>(), Messages.EmptyVolumeList);
 
             double averageVolume = volumes.Average(); // Cálculo do volume médio
             double threshold = averageVolume * thresholdMultiplier; // Limiar para detectar picos
