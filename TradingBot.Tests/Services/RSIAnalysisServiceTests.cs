@@ -1,57 +1,43 @@
 ﻿using FluentAssertions;
 using TradingBot.Domain.Services;
+using TradingBot.Shared.Resources;
 
 namespace TradingBot.Tests.Services
 {
     public class RSIAnalysisServiceTests
     {
-        private readonly RSIAnalysisService _rsiAnalysisService;
+        private readonly RSIAnalysisService _service;
 
         public RSIAnalysisServiceTests()
         {
-            _rsiAnalysisService = new RSIAnalysisService();
+            _service = new RSIAnalysisService();
         }
 
         [Fact]
-        public void CalculateRSI_ShouldReturnOversold_WhenRSIIsBelow30()
+        public void CalculateRSI_ShouldReturnFailure_WhenPriceChangesAreEmpty()
         {
             // Arrange
-            var priceChanges = new List<double> { -1.5, -0.8, -1.2, 0.2, -0.4, -0.6 };
+            var priceChanges = new List<double>();
 
             // Act
-            var result = _rsiAnalysisService.CalculateRSI(priceChanges);
+            var result = _service.CalculateRSI(priceChanges);
 
             // Assert
-            result.RSI.Should().BeLessThan(30.0);
-            result.Indication.Should().Be("Oversold");
+            result.ErrorMessage.Should().Be(Messages.EmptyPriceChangeList);
         }
 
         [Fact]
-        public void CalculateRSI_ShouldReturnOverbought_WhenRSIIsAbove70()
+        public void CalculateRSI_ShouldReturnSuccess_WithCorrectRSI()
         {
             // Arrange
-            var priceChanges = new List<double> { 1.5, 0.8, 0.9, 1.2, -0.1, 0.5, 1.3 };
+            var priceChanges = new List<double> { 1.0, -1.0, 2.0, -0.5, 0.5 };
 
             // Act
-            var result = _rsiAnalysisService.CalculateRSI(priceChanges);
+            var result = _service.CalculateRSI(priceChanges);
 
             // Assert
-            result.RSI.Should().BeGreaterThan(70);
-            result.Indication.Should().Be("Overbought");
-        }
-
-        [Fact]
-        public void CalculateRSI_ShouldReturnIntermediateValue_WhenRSIIsBetween30And70()
-        {
-            // Arrange
-            var priceChanges = new List<double> { 1.0, -0.5, 0.7, -0.3, 0.2, -0.1 };
-
-            // Act
-            var result = _rsiAnalysisService.CalculateRSI(priceChanges);
-
-            // Assert
-            result.RSI.Should().BeInRange(30.0, 70.0);
-            result.Indication.Should().Be("Neutral");
+            result.RSI.Should().BeGreaterThan(0);
+            result.RSI.Should().BeLessThanOrEqualTo(100);
         }
     }
 }

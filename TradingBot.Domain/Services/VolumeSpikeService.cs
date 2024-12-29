@@ -1,5 +1,7 @@
-﻿using TradingBot.Domain.Interfaces.Services;
+﻿using FluentValidation;
+using TradingBot.Domain.Interfaces.Services;
 using TradingBot.Domain.Results;
+using TradingBot.Domain.Validators.Results;
 using TradingBot.Shared.Extensions;
 using TradingBot.Shared.Resources;
 
@@ -11,6 +13,16 @@ namespace TradingBot.Domain.Services
     /// </summary>
     public class VolumeSpikeService : IVolumeSpikeService
     {
+        private readonly IValidator<VolumeSpikeResult> _validator;
+
+        /// <summary>
+        /// Construtor para injeção de dependências.
+        /// </summary>
+        public VolumeSpikeService()
+        {
+            _validator = new VolumeSpikeResultValidator();
+        }
+
         /// <summary>
         /// Identifica picos de volume em uma lista de volumes com base em um multiplicador de limiar.
         /// </summary>
@@ -21,6 +33,9 @@ namespace TradingBot.Domain.Services
         {
             if (volumes.IsNullOrEmpty())
                 return new VolumeSpikeResult(new List<int>(), new List<double>(), Messages.EmptyVolumeList);
+
+            if (thresholdMultiplier <= 0)
+                return new VolumeSpikeResult(new List<int>(), new List<double>(), Messages.InvalidData);
 
             double averageVolume = volumes.Average(); // Cálculo do volume médio
             double threshold = averageVolume * thresholdMultiplier; // Limiar para detectar picos
@@ -38,7 +53,19 @@ namespace TradingBot.Domain.Services
                 }
             }
 
-            return new VolumeSpikeResult(spikeIndexes, spikeVolumes, null);
+            // Cria o resultado
+            var result = new VolumeSpikeResult(spikeIndexes, spikeVolumes);
+
+            // Valida o resultado
+            var validation = _validator.Validate(result);
+            if (!validation.IsValid)
+            {
+                // Coleta os erros de validação
+                var errorMessages = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage));
+                return new VolumeSpikeResult(new List<int>(), new List<double>(), errorMessages);
+            }
+
+            return result;
         }
     }
 }

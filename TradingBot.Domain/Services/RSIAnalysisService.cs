@@ -1,5 +1,7 @@
-﻿using TradingBot.Domain.Interfaces.Services;
+﻿using FluentValidation;
+using TradingBot.Domain.Interfaces.Services;
 using TradingBot.Domain.Results;
+using TradingBot.Domain.Validators.Results;
 using TradingBot.Shared.Resources;
 
 namespace TradingBot.Domain.Services
@@ -10,6 +12,16 @@ namespace TradingBot.Domain.Services
     /// </summary>
     public class RSIAnalysisService : IRSIAnalysisService
     {
+        private readonly IValidator<RSIAnalysisResult> _validator;
+
+        /// <summary>
+        /// Construtor para o serviço de análise de RSI.
+        /// </summary>
+        public RSIAnalysisService()
+        {
+            _validator = new RSIAnalysisResultValidator();
+        }
+
         /// <summary>
         /// Calcula o índice de força relativa (RSI) com base em uma lista de variações de preços.
         /// </summary>
@@ -18,7 +30,7 @@ namespace TradingBot.Domain.Services
         public RSIAnalysisResult CalculateRSI(List<double> priceChanges)
         {
             if (priceChanges == null || !priceChanges.Any())
-                return new RSIAnalysisResult(double.NaN, Messages.EmptyPriceChangeList);
+                return new RSIAnalysisResult(Messages.EmptyPriceChangeList);
 
             var gains = priceChanges.Where(p => p > 0).Sum(); // Soma de todos os ganhos
             var losses = Math.Abs(priceChanges.Where(p => p < 0).Sum()); // Soma absoluta de todas as perdas
@@ -36,7 +48,19 @@ namespace TradingBot.Domain.Services
                 _ => "Neutral" // Mercado neutro
             };
 
-            return new RSIAnalysisResult(rsi, indication);
+            // Cria o resultado do cálculo
+            var result = new RSIAnalysisResult(rsi, indication);
+
+            // Valida o resultado
+            var validation = _validator.Validate(result);
+            if (!validation.IsValid)
+            {
+                // Coleta os erros de validação
+                var errorMessages = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage));
+                return new RSIAnalysisResult(errorMessages);
+            }
+
+            return result;
         }
     }
 }

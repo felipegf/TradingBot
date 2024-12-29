@@ -1,5 +1,7 @@
-﻿using TradingBot.Domain.Interfaces.Services;
+﻿using FluentValidation;
+using TradingBot.Domain.Interfaces.Services;
 using TradingBot.Domain.Results;
+using TradingBot.Domain.Validators.Results;
 using TradingBot.Shared.Extensions;
 using TradingBot.Shared.Resources;
 
@@ -11,6 +13,16 @@ namespace TradingBot.Domain.Services
     /// </summary>
     public class MovingAverageService : IMovingAverageService
     {
+        private readonly IValidator<MovingAverageResult> _validator;
+
+        /// <summary>
+        /// Construtor para o serviço de médias móveis.
+        /// </summary>
+        public MovingAverageService()
+        {
+            _validator = new MovingAverageResultValidator();
+        }
+
         /// <summary>
         /// Calcula as médias móveis simples (SMA) e exponenciais (EMA) para um conjunto de preços.
         /// </summary>
@@ -31,7 +43,19 @@ namespace TradingBot.Domain.Services
             // Cálculo da média móvel exponencial (EMA)
             double ema = CalculateEMA(prices, period);
 
-            return new MovingAverageResult(sma, ema, period, null);
+            // Cria o objeto de resultado
+            var result = new MovingAverageResult(sma, ema, period);
+
+            // Valida o resultado
+            var validation = _validator.Validate(result);
+            if (!validation.IsValid)
+            {
+                // Coleta os erros de validação
+                var errorMessages = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage));
+                return new MovingAverageResult(0, 0, period, errorMessages);
+            }
+
+            return result;
         }
 
         /// <summary>
