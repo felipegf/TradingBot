@@ -9,6 +9,26 @@ on:
     branches:
       - main
 
+env:
+  # Environment variables (não sensíveis)
+  ALERT_THRESHOLD_RSI_OVERBOUGHT: ${{ vars.ALERT_THRESHOLD_RSI_OVERBOUGHT }}
+  ALERT_THRESHOLD_RSI_OVERSOLD: ${{ vars.ALERT_THRESHOLD_RSI_OVERSOLD }}
+  ALERT_THRESHOLD_VOLUME_SPIKE: ${{ vars.ALERT_THRESHOLD_VOLUME_SPIKE }}
+  ASPNETCORE_ENVIRONMENT: ${{ vars.ASPNETCORE_ENVIRONMENT }}
+  LOGGING_LEVEL: ${{ vars.LOGGING_LEVEL }}
+  POSTGRES_HOST: ${{ vars.POSTGRES_HOST }}
+  POSTGRES_PORT: ${{ vars.POSTGRES_PORT }}
+  POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+  POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+  DEPLOY_DIRECTORY: ${{ vars.DEPLOY_DIRECTORY }}
+  DEPLOY_SERVER_HOST: ${{ vars.DEPLOY_SERVER_HOST }}
+  DEPLOY_SERVER_USER: ${{ vars.DEPLOY_SERVER_USER }}
+  CONTAINER_REGISTRY: ${{ vars.CONTAINER_REGISTRY }}
+  EMAIL_TO: ${{ vars.EMAIL_TO }}
+  EMAIL_USERNAME: ${{ vars.EMAIL_USERNAME }}
+  SMTP_SERVER_ADDRESS: ${{ vars.SMTP_SERVER_ADDRESS }}
+  SMTP_SERVER_PORT: ${{ vars.SMTP_SERVER_PORT }}
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -30,3 +50,56 @@ jobs:
 
     - name: Run tests
       run: dotnet test --no-build --collect:"XPlat Code Coverage" --configuration Release
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: ${{ vars.CONTAINER_REGISTRY }}/tradingbot:latest
+
+    - name: Deploy to server
+      run: |
+        sshpass -p "${{ secrets.DEPLOY_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ vars.DEPLOY_SERVER_USER }}@${{ vars.DEPLOY_SERVER_HOST }} << 'EOF'
+        docker pull ${{ vars.CONTAINER_REGISTRY }}/tradingbot:latest
+        docker stop tradingbot || true
+        docker rm tradingbot || true
+        docker run -d --name tradingbot \
+          --env-file .env \
+          -p 80:80 \
+          ${{ vars.CONTAINER_REGISTRY }}/tradingbot:latest
+        EOF
+
+  notify:
+    needs: [build-and-test, deploy]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send email notification
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: ${{ vars.SMTP_SERVER_ADDRESS }}
+        server_port: ${{ vars.SMTP_SERVER_PORT }}
+        username: ${{ vars.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: 'CI/CD Pipeline Status'
+        body: 'The CI/CD pipeline for the TradingBot project has completed successfully.'
+        to: ${{ vars.EMAIL_TO }}
+        from: ${{ vars.EMAIL_USERNAME }}
