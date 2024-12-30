@@ -10,7 +10,6 @@ on:
       - main
 
 env:
-  # Environment variables (não sensíveis)
   ALERT_THRESHOLD_RSI_OVERBOUGHT: ${{ vars.ALERT_THRESHOLD_RSI_OVERBOUGHT }}
   ALERT_THRESHOLD_RSI_OVERSOLD: ${{ vars.ALERT_THRESHOLD_RSI_OVERSOLD }}
   ALERT_THRESHOLD_VOLUME_SPIKE: ${{ vars.ALERT_THRESHOLD_VOLUME_SPIKE }}
@@ -78,11 +77,14 @@ jobs:
     - name: Deploy to server
       run: |
         sshpass -p "${{ secrets.DEPLOY_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ vars.DEPLOY_SERVER_USER }}@${{ vars.DEPLOY_SERVER_HOST }} << 'EOF'
+        docker network create tradingbot-net || true
         docker pull ${{ vars.CONTAINER_REGISTRY }}/tradingbot:latest
         docker stop tradingbot || true
         docker rm tradingbot || true
+        scp -o StrictHostKeyChecking=no .env ${{ vars.DEPLOY_SERVER_USER }}@${{ vars.DEPLOY_SERVER_HOST }}:${{ vars.DEPLOY_DIRECTORY }}/.env
         docker run -d --name tradingbot \
-          --env-file .env \
+          --env-file ${{ vars.DEPLOY_DIRECTORY }}/.env \
+          --network tradingbot-net \
           -p 80:80 \
           ${{ vars.CONTAINER_REGISTRY }}/tradingbot:latest
         EOF
@@ -100,6 +102,9 @@ jobs:
         username: ${{ vars.EMAIL_USERNAME }}
         password: ${{ secrets.EMAIL_PASSWORD }}
         subject: 'CI/CD Pipeline Status'
-        body: 'The CI/CD pipeline for the TradingBot project has completed successfully.'
+        body: |
+          The CI/CD pipeline for the TradingBot project has completed successfully.
+          Build: ${{ needs.build-and-test.result }}
+          Deploy: ${{ needs.deploy.result }}
         to: ${{ vars.EMAIL_TO }}
         from: ${{ vars.EMAIL_USERNAME }}
