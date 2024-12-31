@@ -6,6 +6,7 @@ WORKDIR /src
 COPY *.sln .
 COPY TradingBot.Application/*.csproj TradingBot.Application/
 COPY TradingBot.Domain/*.csproj TradingBot.Domain/
+COPY TradingBot.Shared/*.csproj TradingBot.Shared/
 
 # Restaurar dependências
 RUN dotnet restore TradingBot.Application/TradingBot.Application.csproj
