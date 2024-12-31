@@ -7,6 +7,8 @@ COPY *.sln .
 COPY TradingBot.Application/*.csproj TradingBot.Application/
 COPY TradingBot.Domain/*.csproj TradingBot.Domain/
 COPY TradingBot.Shared/*.csproj TradingBot.Shared/
+COPY TradingBot.Infrastructure/*.csproj TradingBot.Infrastructure/
+COPY TradingBot.Tests/*.csproj TradingBot.Tests/
 
 # Restaurar dependências para toda a solução
 RUN dotnet restore
