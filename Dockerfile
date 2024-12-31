@@ -2,14 +2,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copiar apenas os arquivos necessários para o restore
+# Copiar arquivos necessários para restauração
 COPY *.sln .
 COPY TradingBot.Application/*.csproj TradingBot.Application/
 COPY TradingBot.Domain/*.csproj TradingBot.Domain/
 COPY TradingBot.Shared/*.csproj TradingBot.Shared/
 
-# Restaurar dependências
-RUN dotnet restore TradingBot.Application/TradingBot.Application.csproj
+# Restaurar dependências para toda a solução
+RUN dotnet restore
 
 # Copiar todo o código-fonte
 COPY . .
