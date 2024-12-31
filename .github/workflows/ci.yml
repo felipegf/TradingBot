@@ -1,23 +1,52 @@
-deploy:
-  needs: build-and-test
-  runs-on: [self-hosted, ARM64, TradingBot]
+name: CI/CD Pipeline
 
-  steps:
-  - name: Build Docker Image for Deployment
-    run: |
-      docker build -t tradingbot:latest .
+on:
+  push:
+    branches:
+      - main
+      - feature/*
+  pull_request:
+    branches:
+      - main
 
-  - name: Deploy Application
-    run: |
-      docker stop tradingbot || true
-      docker rm tradingbot || true
-      docker run -d --name TradingBot \
-        -p 80:80 \
-        tradingbot:latest
+env:
+  ALERT_THRESHOLD_RSI_OVERBOUGHT: ${{ vars.ALERT_THRESHOLD_RSI_OVERBOUGHT }}
+  ALERT_THRESHOLD_RSI_OVERSOLD: ${{ vars.ALERT_THRESHOLD_RSI_OVERSOLD }}
+  ALERT_THRESHOLD_VOLUME_SPIKE: ${{ vars.ALERT_THRESHOLD_VOLUME_SPIKE }}
 
-  - name: Verify Running Containers
-    run: docker ps
+jobs:
+  build-and-test:
+    runs-on: [self-hosted, ARM64, TradingBot]
 
-  - name: Health Check
-    run: |
-      curl -f http://localhost/health || exit 1
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Build and Test with Docker
+      run: |
+        docker build -t tradingbot-build-test .
+        docker run --rm tradingbot-build-test
+
+  deploy:
+    needs: build-and-test
+    runs-on: [self-hosted, ARM64, TradingBot]
+
+    steps:
+    - name: Build Docker Image for Deployment
+      run: |
+        docker build -t tradingbot:latest .
+
+    - name: Deploy Application
+      run: |
+        docker stop TradingBot || true
+        docker rm TradingBot || true
+        docker run -d --name TradingBot \
+          -p 80:80 \
+          tradingbot:latest
+
+    - name: Verify Running Containers
+      run: docker ps
+
+    - name: Health Check
+      run: |
+        curl -f http://localhost/health || exit 1
