@@ -22,11 +22,25 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+    - name: Cache .NET installation
+      uses: actions/cache@v3
       with:
-        dotnet-version: 8.0
-        install-dir: ${{ runner.temp }}/dotnet
+        path: ~/.dotnet
+        key: ${{ runner.os }}-dotnet-${{ hashFiles('global.json') }}
+        restore-keys: |
+          ${{ runner.os }}-dotnet-
+
+    - name: Setup .NET
+      run: |
+        if [ ! -d "~/.dotnet" ]; then
+          wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh
+          chmod +x dotnet-install.sh
+          ./dotnet-install.sh --channel 8.0 --install-dir ~/.dotnet
+        fi
+      shell: bash
+
+    - name: Add .NET to PATH
+      run: echo "~/.dotnet" >> $GITHUB_PATH
 
     - name: Restore dependencies
       run: dotnet restore
