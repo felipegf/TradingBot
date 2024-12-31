@@ -22,41 +22,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Cache .NET installation
-      uses: actions/cache@v3
-      with:
-        path: ~/.dotnet
-        key: ${{ runner.os }}-dotnet-${{ hashFiles('global.json') }}
-        restore-keys: |
-          ${{ runner.os }}-dotnet-
-
-    - name: Setup .NET
+    - name: Build and Test with Docker
       run: |
-        if [ ! -d "~/.dotnet" ]; then
-          wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh
-          chmod +x dotnet-install.sh
-          ./dotnet-install.sh --channel 8.0 --install-dir ~/.dotnet
-        fi
-      shell: bash
-
-    - name: Add .NET to PATH
-      run: echo "~/.dotnet" >> $GITHUB_PATH
-
-    - name: Restore dependencies
-      run: dotnet restore
-
-    - name: Build solution
-      run: dotnet build --no-restore --configuration Release
-
-    - name: Run tests
-      run: dotnet test --no-build --collect:"XPlat Code Coverage" --configuration Release
+        docker build -t tradingbot-build-test .
+        docker run --rm tradingbot-build-test
 
   deploy:
     needs: build-and-test
     runs-on: [self-hosted, ARM64, TradingBot]
 
     steps:
-    - name: Deploy application
+    - name: Build Docker Image for Deployment
       run: |
-        echo "Deploying on Raspberry Pi using self-hosted runner"
-        # Comandos de deploy apropriados
+        docker build -t tradingbot:latest .
+
+    - name: Deploy Application
+      run: |
+        docker stop tradingbot || true
+        docker rm tradingbot || true
+        docker run -d --name tradingbot \
+          -p 80:80 \
+          tradingbot:latest
